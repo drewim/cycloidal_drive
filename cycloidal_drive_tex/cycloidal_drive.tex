@@ -1,0 +1,95 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{titlesec}
+
+
+\title{Notes on Cycloidal Drives}
+\author{Drew Imhof}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Design of Cycloidal Disc}
+\subsection{Cycloidal Disc}
+
+\begin{itemize}
+    \item Cycloidal shape obtained by rolling circle that rolls around a base circle
+    \item Cycloid corresponds to path described by a point at the circumference of the rolling circle (ordinary cycloid)
+    \item Diameter of fixed pins will correspond w/ diameter of drawing circle used to actually make cycloid
+    \item Will likely want contracted cycloid to decrease eccentricity and unbalanced forces at high speeds (r $<$ R)
+    \item Due to symmetrical load distribution, two cycloidal discs are often used and offset by 180\textdegree\
+\end{itemize}
+
+\subsection{Transmission Ratio}
+\begin{align}
+    Transmission Ratio = i = \frac{n}{N - n} \\
+    where, N = 1 + n
+\end{align}
+
+\begin{itemize}
+    \item \textit{n} = \# of rotor teeth
+    \item \textit{N} = \# of rollers
+\end{itemize}
+
+\begin{align}
+    i = \frac{d}{\delta} \\
+    \delta = \frac{D}{N} \\ 
+    % i = \frac{d}{\delta} = \frac{d*N}{D} \\
+    d = \frac{i}{N}D
+\end{align}
+
+\begin{itemize}
+    \item \textit{$\delta$} is the diameter of the rolling circle
+    \item \textit{d} is base circle diameter
+    \item \textit{D} is the pitch circle of the fixed diameter pins
+    \item \textit{N} is the \# of fixed pins
+\end{itemize}
+
+\subsection{Eccentricity}
+\begin{equation}
+    e \le \frac{\delta}{2}
+\end{equation}
+
+\begin{itemize}
+    \item If \textit{e} is too small, the shape of the cycloid will become too soft and get close to a circle
+    \item This can cause increasing backlash
+\end{itemize}
+
+\subsection{Hole diameter of the cycloidal disc}
+\begin{equation}
+    d_h = d_r +2e
+\end{equation}
+
+\begin{itemize}
+    \item \textit{$d_h$} is the diameter of holes in the cycloidal disc
+    \item \textit{$d_r$} is the diameter of the roller pins 
+\end{itemize}
+
+\section{Epitrochoid}
+An epitrochoid is a roulette traced by a pt attached to a circle of radius \textit{r}
+rolling around the outside of a fixed circle of radius \textit{R}. The point is at a distance
+\textit{d} from the center of the exterior circle. The parametric equations are as follows:
+
+\begin{align}
+    x(\theta) = (R+r)\cos\theta - d\cos(\frac{R+r}{r}\theta) \\
+    y(\theta) = (R+r)\sin\theta - d\sin(\frac{R+r}{r}\theta)
+\end{align}
+
+\section{References}
+
+\begin{enumerate}
+    \item  \href{https://www.tec-science.com/mechanical-power-transmission/planetary-gear/construction-of-the-cycloidal-disc/}{Construction of Cycloidal Disc}
+    \item  \href{https://digitalcommons.njit.edu/cgi/viewcontent.cgi?article=2822&context=theses}{Thesis involoving cycloidal drives}
+    \item \href{https://www.researchgate.net/publication/235992854_A_New_Design_of_a_Two-Stage_Cycloidal_Speed_Reducer}{Thesis with Dual Stage cycloidal drive}
+    \item  \href{https://howtomechatronics.com/how-it-works/what-is-cycloidal-driver-designing-3d-printing-and-testing/}{Cycloidal drive design and printing}
+    \item  \href{https://blogs.solidworks.com/teacher/wp-content/uploads/sites/3/Building-a-Cycloidal-Drive-with-SOLIDWORKS.pdf}{Cycloidal drive in Solidworks}
+    \item \href{https://stepbystep-robotics.com/hp/robots/cycloidal-drive/}{stepbystep-robotics guide}
+    \item  \href{https://en.wikipedia.org/wiki/Epitrochoid}{Wiki page on Epitrochoid}
+    \item  \href{https://en.wikipedia.org/wiki/Epicycloid}{Wiki page on epicycloid}
+\end{enumerate}
+
+\end{document}
