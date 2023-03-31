@@ -4,7 +4,7 @@ Working on a cycloidal drive system. This repo will include  latex documents wit
 
 Can create visualizations of the "rolling circle" used to make cycloid shape as seen below:
 
-![Cycloid GIF](/imgs/plot_ecc_1.1_03_31_2023_08//07)
+![Cycloid GIF](/imgs/plot_ecc_1.1_03_31_2023_08::07)
 
 The different shape parameters can be varied to see their effects on the final cycloid disc.
 Here's a final image from one run:
