@@ -6,7 +6,7 @@ import imageio
 from datetime import datetime
 # import time
 
-class Cycloid:
+class CycloidGeometry:
     def __init__(self):
         # self.num_rotor_teeth = 11
         self._num_rollers = 10
@@ -26,10 +26,6 @@ class Cycloid:
         
         self._rolling_circle_center = []
         self._epicycloid_pts = []
-        
-        self.color = 'blue'
-        self.alpha = 0.8
-        self.frames = []
         
         self._valid_roller_value = 3 # Minimum number of rollers
         
@@ -147,52 +143,6 @@ class Cycloid:
     def getBaseCircleDiam(self):
         return self._gear_ratio * self._rolling_circle_diam
     
-    def makePlot(self, ax, fig, saveGIF=False, savePic=True):
-        self.createPlotShapes()
-        self.createCycloidHoles()
-        self.addPatches(ax)
-        self.makeLegendandTitle(ax)
-        for angle in range(0, 361):
-            self.makeCircleRoll(angle)
-            self.updatePatches()
-            plt.pause(0.0005)
-            self.createPlotGIF(fig)
-        if saveGIF: self.saveGIF()
-        if savePic: self.savePIC()
-            
-    def createPlotShapes(self):
-        cycloid_base = self.createBaseCircle()
-        rolling_circle = self.createRollingCircle()
-        rolling_circle_line = self.createRollingCircleLine()
-        epicycloid = self.createEpicycloid()
-        self._plot_objects = {'cycloid base': cycloid_base, 
-                          'rolling circle': rolling_circle,
-                          'rolling circle line': rolling_circle_line,
-                          'epicycloid': epicycloid}
-    
-    def makeCircleRoll(self, angle):
-        self.calcRollingCircleCenter(angle)
-        center = self.get_last_rolling_circle_center
-        self.createCycloidPts(center, angle)
-        
-    def updatePatches(self):
-        self._plot_objects['rolling circle'].center = \
-            self.get_last_rolling_circle_center 
-        self._plot_objects['rolling circle line'].set_xdata(( \
-            self.get_last_rolling_circle_center[0],
-            self.get_last_epicycloid_pts[0]))
-        self._plot_objects['rolling circle line'].set_ydata(( \
-            self.get_last_rolling_circle_center[1],
-            self.get_last_epicycloid_pts[1]))
-        self._plot_objects['epicycloid'].set_xy(self.get_epicycloid_pts)
-    
-    def addPatches(self, ax):
-        for key, shape in self._plot_objects.items():
-            if key != 'rolling circle line':
-                ax.add_patch(shape)
-            else: 
-                ax.add_line(shape)
-    
     def calcRollingCircleCenter(self, angle):
         x = ((self._base_circle_diam / 2) + (self._rolling_circle_diam / 2)) \
             * self.cos(angle)
@@ -206,52 +156,6 @@ class Cycloid:
         y = center[1] + ((self._rolling_circle_diam / 2) - self._eccentricity) \
             * self.sin(self._num_rollers * angle)
         self._epicycloid_pts.append([x, y])
-    
-    def makeLegendandTitle(self, ax):
-        ax.set_title(f"Cycloidal Disc")
-        ax.legend(framealpha = 0.6, loc='lower right')
-    
-    def createPlotGIF(self, fig):
-        fig.canvas.draw()
-        frame = np.array(fig.canvas.renderer.buffer_rgba())
-        self.frames.append(frame)
-        
-    def saveGIF(self):
-        timestamp = datetime.now().strftime("%m_%d_%Y_%H%M")
-        imageio.mimsave(f"imgs/plot_ecc_{self._eccentricity}_{timestamp}.gif", 
-                        self.frames[::4], fps=30)
-    
-    def savePIC(self):
-        timestamp = datetime.now().strftime("%m_%d_%Y_%H%M") 
-        filename = f"imgs/cycloid_plot_{timestamp}.png"
-        plt.savefig(filename)
-            
-    def createBaseCircle(self, center = (0,0)):
-        return plt.Circle(center, self._base_circle_diam / 2, fill=False, 
-                          linestyle='--', label=f'Base Circle, diameter = {self._base_circle_diam}') 
-    
-    def createRollingCircle(self, center = (0,0)):
-        return plt.Circle(center, self._rolling_circle_diam / 2, fill=False, lw=2,
-                          label=f'Rolling Circle, diameter = {self._rolling_circle_diam}')
-    
-    def createRollingCircleLine(self):
-        return plt.Line2D((0, 1), (0, 0), color='red', lw=2,
-                          label="Rolling Circle Line")
-    
-    def createEpicycloid(self):
-        return plt.Polygon([[0, 0]], fill=False, closed=False, color=self.color,
-                           lw=2, alpha = self.alpha,
-                           label=f'Epicycloid, eccentricity of {self._eccentricity}') 
-    
-    def createCycloidHoles(self):
-        spacing = np.linspace(0, 360, self._num_output_shafts + 1)
-        for i, output_angle in enumerate(spacing):
-            output_hole = plt.Circle(
-                (self._radius_output_shaft_circle * self.cos(output_angle), 
-                 self._radius_output_shaft_circle * self.sin(output_angle)),
-                self._base_hole_diam / 2, fill=False, color='blue', lw=2)
-            # ax.add_patch(output_hole)   
-            self._plot_objects[f'output_hole{i}'] = output_hole
     
     # def mergeCycloidandHoles(self, ax):          
     #     cycloid_verts = self._plot_objects['epicycloid'].get_path().vertices
@@ -270,42 +174,138 @@ class Cycloid:
     #     plt.axis('on')
         # ax.plot(x_ext, y_ext, x_int, y_int)
 
+class CycloidVisualization:
+    def __init__(self, cycloid):
+        self.cycloid = cycloid
+        self.fig = plt.figure(figsize=(4,4))
+        self._plot_objects = {}
         
+        self.color = 'blue'
+        self.alpha = 0.8
+        self.frames = []
         
+        self.setupPlot()
+    
+    def makePlot(self, saveGIF=False, savePic=True):
+        self.createPlotShapes()
+        self.addPatches()
+        self.makeLegendandTitle()
+        for angle in range(0, 361):
+            self.makeCircleRoll(angle)
+            self.updatePatches()
+            plt.pause(0.0005)
+            self.createPlotGIF()
+        if saveGIF: self.saveGIF()
+        if savePic: self.savePIC()
+            
+    def createPlotShapes(self):
+        cycloid_base = self.createBaseCircle()
+        rolling_circle = self.createRollingCircle()
+        rolling_circle_line = self.createRollingCircleLine()
+        epicycloid = self.createEpicycloid()
+        self._plot_objects = {'cycloid base': cycloid_base, 
+                          'rolling circle': rolling_circle,
+                          'rolling circle line': rolling_circle_line,
+                          'epicycloid': epicycloid}
+        self.createCycloidHoles()
+    
+    def makeCircleRoll(self, angle):
+        self.cycloid.calcRollingCircleCenter(angle)
+        center = cycloid.get_last_rolling_circle_center
+        self.cycloid.createCycloidPts(center, angle)
+        
+    def updatePatches(self):
+        self._plot_objects['rolling circle'].center = \
+            self.cycloid.get_last_rolling_circle_center 
+        self._plot_objects['rolling circle line'].set_xdata(( \
+            self.cycloid.get_last_rolling_circle_center[0],
+            self.cycloid.get_last_epicycloid_pts[0]))
+        self._plot_objects['rolling circle line'].set_ydata(( \
+            self.cycloid.get_last_rolling_circle_center[1],
+            self.cycloid.get_last_epicycloid_pts[1]))
+        self._plot_objects['epicycloid'].set_xy(self.cycloid.get_epicycloid_pts)
+    
+    def addPatches(self):
+        for key, shape in self._plot_objects.items():
+            if key != 'rolling circle line':
+                self.ax.add_patch(shape)
+            else: 
+                self.ax.add_line(shape)
+            
+    def createBaseCircle(self, center = (0,0)):
+        return plt.Circle(center, self.cycloid._base_circle_diam / 2, fill=False, 
+                          linestyle='--', label=f'Base Circle, diameter = {self.cycloid._base_circle_diam}') 
+    
+    def createRollingCircle(self, center = (0,0)):
+        return plt.Circle(center, self.cycloid._rolling_circle_diam / 2, fill=False, lw=2,
+                          label=f'Rolling Circle, diameter = {self.cycloid._rolling_circle_diam}')
+    
+    def createRollingCircleLine(self):
+        return plt.Line2D((0, 1), (0, 0), color='red', lw=2,
+                          label="Rolling Circle Line")
+    
+    def createEpicycloid(self):
+        return plt.Polygon([[0, 0]], fill=False, closed=False, color=self.color,
+                           lw=2, alpha = self.alpha,
+                           label=f'Epicycloid, eccentricity of {self.cycloid._eccentricity}') 
+    
+    def createCycloidHoles(self):
+        spacing = np.linspace(0, 360, self.cycloid._num_output_shafts + 1)
+        for i, output_angle in enumerate(spacing):
+            output_hole = plt.Circle(
+                (self.cycloid._radius_output_shaft_circle * self.cycloid.cos(output_angle), 
+                 self.cycloid._radius_output_shaft_circle * self.cycloid.sin(output_angle)),
+                self.cycloid._base_hole_diam / 2, fill=False, color='blue', lw=2)
+            self._plot_objects[f'output_hole{i}'] = output_hole
+            
+    def setupPlot(self):
+        axlims = self.calcAxisLimits()
+        self.ax = plt.axes(xlim=(-axlims, axlims), ylim=(-axlims, axlims))
+        plt.axis('off')
+        plt.ion()
+        plt.show()
+    
+    def calcAxisLimits(self):
+        return  self.cycloid.get_radius_pin_circle + \
+            4 * self.cycloid.get_radius_roller
+     
+    def makeLegendandTitle(self):
+        self.ax.set_title(f"Cycloidal Disc")
+        self.fig.legend(framealpha = 0.6, loc='lower center')
+        # self.ax.legend(bbox_to_anchor=(1,1), bbox_transform=self.fig.transFigure,
+        #                framealpha=0.5)
+    
+    def createPlotGIF(self):
+        self.fig.canvas.draw()
+        frame = np.array(self.fig.canvas.renderer.buffer_rgba())
+        self.frames.append(frame)
+        
+    def saveGIF(self):
+        timestamp = datetime.now().strftime("%m_%d_%Y_%H%M")
+        imageio.mimsave(f"imgs/plot_ecc_{self.cycloid._eccentricity}_{timestamp}.gif", 
+                        self.frames[::4], fps=30)
+    
+    def savePIC(self):
+        timestamp = datetime.now().strftime("%m_%d_%Y_%H%M") 
+        filename = f"imgs/cycloid_plot_{timestamp}.png"
+        plt.savefig(filename)
+    
+    def endPlot(self):
+        plt.ioff()
+        plt.show(block=True)
         
     # TODO: Add holes in cycloid base, add roller pins to plots
     # TODO: Could use LinAlg to implement some equations
-    # TODO: Add a secondary plot with cycloidal disc moving around rollers
-    # TODO: Refactor to create separate cycloid and geometry classes
-      
+    # TODO: Add a secondary plot with cycloidal disc moving around rollers      
 
-def setupPlot(amount):
-    fig = plt.figure(figsize=(6,6))
-    ax = plt.axes(xlim=(-amount, amount), ylim=(-amount, amount))
-    plt.axis('off')
-    plt.ion()
-    plt.show()
-    return fig, ax
-    
-def endPlot():
-    plt.ioff()
-    plt.show(block=True)
         
 if __name__ == '__main__':
-    cycloid = Cycloid()
-    cycloid.set_num_rollers = 10
-    cycloid2 = Cycloid()
-    # cycloid.set_radius_pin_circle = 10
-    # print(cycloid.get_gear_ratio)
+    cycloid = CycloidGeometry()
+    cycloid.set_num_rollers = 8
     cycloid.set_eccentricity = 1.1
-    amount = cycloid.get_radius_pin_circle + 4 * cycloid.get_radius_roller
-    fig, ax = setupPlot(amount)
-    # cycloid2.color = 'magenta'
-    # cycloid2.alpha = 0.8
-    
-    cycloid.makePlot(ax, fig, saveGIF=False, savePic=False)
-    # cycloid2.makePlot(ax)
-        
-    endPlot()
+
+    cycloidplot = CycloidVisualization(cycloid)
+    cycloidplot.makePlot(saveGIF=True, savePic=False)   
+    cycloidplot.endPlot()
     
     
