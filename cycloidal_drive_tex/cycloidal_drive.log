@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.3.11)  30 MAR 2023 10:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.3.11)  31 MAR 2023 15:47
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -298,18 +298,18 @@ Package rerunfilecheck Info: File `cycloidal_drive.out' has not changed.
 (rerunfilecheck)             Checksum: 6E4725323AD2598C5C9D0AC96A4BEAE6;1007.
  ) 
 Here is how much of TeX's memory you used:
- 8812 strings out of 477475
- 139199 string characters out of 5824245
+ 8813 strings out of 477475
+ 139205 string characters out of 5824245
  1867388 words of memory out of 5000000
  28954 multiletter control sequences out of 15000+600000
  518043 words of font info for 52 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  75i,8n,76p,385b,501s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </Users/drewimhof/Library/texlive/2022basic/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></usr/local/texlive/2022basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2022basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2022basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2022basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2022basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2022basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2022basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2022basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on cycloidal_drive.pdf (2 pages, 101778 bytes).
+Output written on cycloidal_drive.pdf (2 pages, 102411 bytes).
 PDF statistics:
- 122 PDF objects out of 1000 (max. 8388607)
- 99 compressed objects within 1 object stream
- 27 named destinations out of 1000 (max. 500000)
+ 125 PDF objects out of 1000 (max. 8388607)
+ 101 compressed objects within 2 object streams
+ 28 named destinations out of 1000 (max. 500000)
  57 words of extra memory for PDF output out of 10000 (max. 10000000)
 
