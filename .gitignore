@@ -430,7 +430,7 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-*.icloud
+**.gif.icloud
 *__pycache__
 /.pytest_cache
 __init__*
