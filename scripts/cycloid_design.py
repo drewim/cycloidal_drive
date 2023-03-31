@@ -294,10 +294,9 @@ class CycloidVisualization:
         plt.ioff()
         plt.show(block=True)
         
-    # TODO: Add holes in cycloid base, add roller pins to plots
+    # TODO: Add roller pins to plots
     # TODO: Could use LinAlg to implement some equations
     # TODO: Add a secondary plot with cycloidal disc moving around rollers      
-
         
 if __name__ == '__main__':
     cycloid = CycloidGeometry()
@@ -305,7 +304,7 @@ if __name__ == '__main__':
     cycloid.set_eccentricity = 1.1
 
     cycloidplot = CycloidVisualization(cycloid)
-    cycloidplot.makePlot(saveGIF=True, savePic=False)   
+    cycloidplot.makePlot(saveGIF=False, savePic=False)   
     cycloidplot.endPlot()
     
     
