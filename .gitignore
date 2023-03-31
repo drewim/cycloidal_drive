@@ -431,5 +431,6 @@ dmypy.json
 cython_debug/
 
 *.icloud
-/__pycache__
+*__pycache__
 /.pytest_cache
+__init__*

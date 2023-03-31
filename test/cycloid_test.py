@@ -1,4 +1,4 @@
-from cycloid_design import Cycloid, Plotter
+from scripts.cycloid_design import Cycloid
 import pytest
 
         
