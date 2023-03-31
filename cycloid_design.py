@@ -18,6 +18,9 @@ class Cycloid:
         self._rolling_circle_center = []
         self._epicycloid_pts = []
         
+        self.color = 'blue'
+        self.alpha = 0.8
+        
         self._valid_roller_value = 3 # Minimum number of rollers
 
         #TODO: Add a checker, perhaps a decorator to make sure values are valid
@@ -130,7 +133,22 @@ class Cycloid:
             self.makeCircleRoll(angle)
             self.updatePatches()
             plt.pause(0.001)
+            
+    def createPlotShapes(self):
+        cycloid_base = self.createBaseCircle()
+        rolling_circle = self.createRollingCircle()
+        rolling_circle_line = self.createRollingCircleLine()
+        epicycloid = self.createEpicycloid()
+        self._plot_objects = {'cycloid base': cycloid_base, 
+                          'rolling circle': rolling_circle,
+                          'rolling circle line': rolling_circle_line,
+                          'epicycloid': epicycloid}
     
+    def makeCircleRoll(self, angle):
+        self.calcRollingCircleCenter(angle)
+        center = self.get_last_rolling_circle_center
+        self.createCycloidPts(center, angle)
+        
     def updatePatches(self):
         self._plot_objects['rolling circle'].center = \
             self.get_last_rolling_circle_center 
@@ -149,29 +167,6 @@ class Cycloid:
             else: 
                 ax.add_line(shape)
     
-    def createPlotShapes(self):
-        cycloid_base = self.createBaseCircle()
-        rolling_circle = self.createRollingCircle()
-        rolling_circle_line = self.createRollingCircleLine()
-        epicycloid = self.createEpicycloid()
-        
-        self._plot_objects = {'cycloid base': cycloid_base, 
-                          'rolling circle': rolling_circle,
-                          'rolling circle line': rolling_circle_line,
-                          'epicycloid': epicycloid}
-            
-    def createBaseCircle(self, center = (0,0)):
-        return plt.Circle(center, self._base_circle_diam / 2, fill=False, linestyle='--') 
-    
-    def createRollingCircle(self, center = (0,0)):
-        return plt.Circle(center, self._rolling_circle_diam / 2, fill=False)
-    
-    def createRollingCircleLine(self):
-        return plt.Line2D((0, 1), (0, 0), color='red')
-    
-    def createEpicycloid(self):
-        return plt.Polygon([[0, 0]], fill=False, closed=False, color='blue', lw=2)
-    
     def calcRollingCircleCenter(self, angle):
         x = ((self._base_circle_diam / 2) + (self._rolling_circle_diam / 2)) \
             * self.cos(angle)
@@ -185,12 +180,20 @@ class Cycloid:
         y = center[1] + ((self._rolling_circle_diam / 2) - self._eccentricity) \
             * self.sin(self._num_rollers * angle)
         self._epicycloid_pts.append([x, y])
-    
-    def makeCircleRoll(self, angle):
-        self.calcRollingCircleCenter(angle)
-        center = self.get_last_rolling_circle_center
-        self.createCycloidPts(center, angle)
             
+    def createBaseCircle(self, center = (0,0)):
+        return plt.Circle(center, self._base_circle_diam / 2, fill=False, linestyle='--') 
+    
+    def createRollingCircle(self, center = (0,0)):
+        return plt.Circle(center, self._rolling_circle_diam / 2, fill=False, lw=2)
+    
+    def createRollingCircleLine(self):
+        return plt.Line2D((0, 1), (0, 0), color='red', lw=2)
+    
+    def createEpicycloid(self):
+        return plt.Polygon([[0, 0]], fill=False, closed=False, color=self.color,
+                           lw=2, alpha = self.alpha)
+             
 
 def setupPlot():
     fig = plt.figure(figsize=(5,5))
@@ -210,12 +213,17 @@ def endPlot():
 if __name__ == '__main__':
     cycloid = Cycloid()
     cycloid.set_num_rollers = 8
+    cycloid2 = Cycloid()
     # cycloid.set_radius_pin_circle = 10
     # print(cycloid.get_gear_ratio)
-    cycloid.set_eccentricity = .5
+    cycloid.set_eccentricity = 0.9
+    
     ax = setupPlot()
-  
+    # cycloid2.color = 'magenta'
+    # cycloid2.alpha = 0.8
+    
     cycloid.makePlot(ax)
+    # cycloid2.makePlot(ax)
     
     endPlot()
     
