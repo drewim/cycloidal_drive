@@ -1,10 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt 
-from shapely.geometry import Polygon
-from shapely.ops import unary_union
+# from shapely.geometry import Polygon
+# from shapely.ops import unary_union
 import imageio
 from datetime import datetime
-# import time
 
 class CycloidGeometry:
     def __init__(self):
@@ -156,23 +155,6 @@ class CycloidGeometry:
         y = center[1] + ((self._rolling_circle_diam / 2) - self._eccentricity) \
             * self.sin(self._num_rollers * angle)
         self._epicycloid_pts.append([x, y])
-    
-    # def mergeCycloidandHoles(self, ax):          
-    #     cycloid_verts = self._plot_objects['epicycloid'].get_path().vertices
-    #     cycloid_sh = Polygon(cycloid_verts)
-    #     output_hole_keys = [key for key in self._plot_objects.keys() \
-    #                         if key.startswith('output_hole')]
-    #     for key in output_hole_keys:
-    #         output_circle_verts = self._plot_objects[key].get_path().vertices
-    #         circle_sh = Polygon(output_circle_verts)
-    #         full_cycloid = unary_union([cycloid_sh, circle_sh])
-    #     x_ext, y_ext = full_cycloid.exterior.coords.xy
-    #     x_int, y_int = full_cycloid.interiors.coords.xy
-    #     plt.clf()
-    #     amt = self.get_radius_pin_circle + 4 * self.get_radius_roller
-    #     ax = plt.axes(xlim=(-amt, amt), ylim=(-amt, amt))
-    #     plt.axis('on')
-        # ax.plot(x_ext, y_ext, x_int, y_int)
 
 class CycloidVisualization:
     def __init__(self, cycloid):
@@ -183,7 +165,7 @@ class CycloidVisualization:
         self.color = 'blue'
         self.alpha = 0.8
         self.frames = []
-        
+
         self.setupPlot()
     
     def makePlot(self, saveGIF=False, savePic=True):
@@ -272,8 +254,6 @@ class CycloidVisualization:
     def makeLegendandTitle(self):
         self.ax.set_title(f"Cycloidal Disc")
         self.fig.legend(framealpha = 0.6, loc='lower center')
-        # self.ax.legend(bbox_to_anchor=(1,1), bbox_transform=self.fig.transFigure,
-        #                framealpha=0.5)
     
     def createPlotGIF(self):
         self.fig.canvas.draw()
@@ -295,6 +275,7 @@ class CycloidVisualization:
         plt.show(block=True)
         
     # TODO: Add holes in cycloid base, add roller pins to plots
+    # TODO: Merge Epicycloid and holes into one polygon
     # TODO: Could use LinAlg to implement some equations
     # TODO: Add a secondary plot with cycloidal disc moving around rollers      
 
