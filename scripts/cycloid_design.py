@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 # from shapely.ops import unary_union
 import imageio
 from datetime import datetime
+import os
 
 class CycloidGeometry:
     def __init__(self):
@@ -50,12 +51,30 @@ class CycloidGeometry:
     @property
     def get_radius_output_shaft_pins(self):
         return self._radius_output_shaft_pins
-    
+
     @get_radius_output_shaft_pins.setter
     @check_input((int, float), 1)
     def set_radius_output_shaft_pins(self, radius):
         self._radius_output_shaft_pins = radius
         self._base_hole_diam = self.calcHoleDiameter()
+
+    @property
+    def get_radius_output_shaft_circle(self):
+        return self._radius_output_shaft_circle
+
+    @get_radius_output_shaft_circle.setter
+    @check_input((int, float), 8)
+    def set_radius_output_shaft_circle(self, radius):
+        self._radius_output_shaft_circle = radius
+
+    @property
+    def get_num_output_shafts(self):
+        return self._num_output_shafts
+
+    @get_num_output_shafts.setter
+    @check_input(int, 3)
+    def set_num_output_shafts(self, num):
+        self._num_output_shafts = num
     
     @property
     def get_last_rolling_circle_center(self):
@@ -103,9 +122,6 @@ class CycloidGeometry:
         self._radius_pin_circle = radius
         self._rolling_circle_diam = self.getRollingCircleDiam()
         self._base_circle_diam = self.getBaseCircleDiam()
-        print(f"Radius pin circle: {self._radius_pin_circle}\n",
-              f"Rolling circle diameter: {self._rolling_circle_diam}\n",
-              f"Base circle diam: {self._base_circle_diam}")
     
     @property
     def get_radius_roller(self):
@@ -277,16 +293,88 @@ class CycloidVisualization:
     # TODO: Add holes in cycloid base, add roller pins to plots
     # TODO: Merge Epicycloid and holes into one polygon
     # TODO: Could use LinAlg to implement some equations
-    # TODO: Add a secondary plot with cycloidal disc moving around rollers      
+    # TODO: Add a secondary plot with cycloidal disc moving around rollers
+          
+class CycloidSolidWorks:
+    def __init__(self, cycloid):
+        self.cycloid = cycloid
+        self._parameter_list = []
+        self._parametric_eqns = []
+        self.createTextFile()
 
-        
+    def createTextFile(self):
+        self._eqn_file = open(r"text/equations.txt", "w")
+        self._par_eqn_file = open(r"text/parametric_equations.txt", "w")
+
+    def writeParametricEquations(self):
+        self.createParametricEqns()
+        for line in self._parametric_eqns:
+            self._par_eqn_file.write(line)
+            self._par_eqn_file.write("\n\n")
+        self._par_eqn_file.close()
+
+    def writeParameters(self):
+        self.createParameterList()
+        for line in self._parameter_list:
+            self._eqn_file.write(line)
+            self._eqn_file.write("\n\n")
+        self._eqn_file.close()
+
+    def createParametricEqns(self):
+        ecc = self.cycloid.get_eccentricity
+        rollers = self.cycloid.get_num_rollers
+        roller_radius = self.cycloid.get_radius_roller
+        radius_roller_PCD = self.cycloid.get_radius_pin_circle
+
+        psi = f"arctan(sin((1-{rollers}) * t) / (((\"D6@Sketch2\" / 2)/({ecc} * {rollers}))-cos((1-{rollers}) * t)))"
+        x = f"x = (\"D6@Sketch2\" / 2) * cos(t) - (\"D7@Sketch2\" / 2) * cos(t + {psi}) - {ecc} * cos({rollers} * t)"
+        y = f"y = -(\"D6@Sketch2\" / 2) * sin(t) + (\"D7@Sketch2\" / 2) * sin(t + {psi}) + {ecc} * sin({rollers} * t)"
+
+        psi_2 = f"arctan(sin((1-{rollers}) * t) / (({radius_roller_PCD} / ({ecc} * {rollers})) - cos((1 - {rollers}) * t)))"
+        x_2 = f"x = {radius_roller_PCD} * cos(t) - {roller_radius} * cos(t + {psi_2}) - {ecc} * cos({rollers} * t)"
+        y_2 = f"y = -{radius_roller_PCD} * sin(t) + {roller_radius} * sin(t + {psi_2}) + {ecc} * sin({rollers} * t)"
+
+        self._parametric_eqns.append(x)
+        self._parametric_eqns.append(y)
+        self._parametric_eqns.append(x_2)
+        self._parametric_eqns.append(y_2)
+
+    def createParameterList(self):
+        # Append values set in Cycloid Object for Cycloid Disc Creation
+        self._parameter_list.append(f"\"roller_radius\"= {self.cycloid.get_radius_roller}mm")
+        self._parameter_list.append(f"\"roller_pitch_circle_radius\"= {self.cycloid.get_radius_pin_circle}mm")
+        self._parameter_list.append(f"\"num_rollers\"= {self.cycloid.get_num_rollers}")
+        self._parameter_list.append(f"\"gear_ratio\"= {self.cycloid.get_gear_ratio}")
+        self._parameter_list.append(f"\"eccentricity\"= {self.cycloid.get_eccentricity}")
+        self._parameter_list.append(f"\"output_pin_radius\"= {self.cycloid.get_radius_output_shaft_pins}mm")
+        self._parameter_list.append(f"\"cycloid_hole_radius\"= {self.cycloid.calcHoleDiameter() / 2}mm")
+        self._parameter_list.append(f"\"num_output_pins\"= {self.cycloid.get_num_output_shafts}")
+        self._parameter_list.append(f"\"base_circle_diameter\"= {self.cycloid.getBaseCircleDiam()}mm")
+        self._parameter_list.append(f"\"output_pin_pitch_radius\"= {self.cycloid.get_radius_output_shaft_circle}mm")
+        # Add values for equations in Solidworks
+        # self._parameter_list.append("\"D2@Sketch2\"=\"output_pin_pitch_radius\" * 2")
+        # self._parameter_list.append("\"D3@Sketch2\"=\"cycloid_hole_radius\" * 2")
+        # self._parameter_list.append("\"D6@Sketch2\"=\"roller_pitch_circle_radius\" * 2")
+        # self._parameter_list.append("\"D7@Sketch2\"=\"roller_radius\" * 2")
+        # self._parameter_list.append("\"D9@Sketch2\"= \"D6@Sketch2\" / 2")
+        # self._parameter_list.append("\"D1@Sketch2\"=\"base_circle_diameter\"")
+
+
 if __name__ == '__main__':
     cycloid = CycloidGeometry()
-    cycloid.set_num_rollers = 8
+    cycloid.set_num_rollers = 10
+    cycloid.set_radius_roller = 3
+    cycloid.set_radius_pin_circle = 20
     cycloid.set_eccentricity = 1.1
+    cycloid.set_radius_output_shaft_circle = 10
+    cycloid.set_radius_output_shaft_pins = 4
+    cycloid.set_num_output_shafts = 4
 
-    cycloidplot = CycloidVisualization(cycloid)
-    cycloidplot.makePlot(saveGIF=True, savePic=False)   
-    cycloidplot.endPlot()
+    # cycloidplot = CycloidVisualization(cycloid)
+    # cycloidplot.makePlot(saveGIF=True, savePic=False)   
+    # cycloidplot.endPlot()
+    cycloid_sldwks = CycloidSolidWorks(cycloid)
+    cycloid_sldwks.writeParameters()
+    cycloid_sldwks.writeParametricEquations()
     
     
