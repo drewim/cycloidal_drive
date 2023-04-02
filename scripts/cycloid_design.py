@@ -10,7 +10,7 @@ class CycloidGeometry:
     def __init__(self):
         self._num_rollers = 10
         self._num_rotors = self._num_rollers - 1
-        self._radius_pin_circle = 20
+        self._radius_roller_circle = 20
         self._radius_roller = 5
         self._eccentricity = 1 # Must be less than rad_pin_circle / num_rollers
         
@@ -19,9 +19,9 @@ class CycloidGeometry:
         self._num_output_shafts = 5
         
         self._gear_ratio = self.calcGearRatio()
-        self._rolling_circle_diam = self.getRollingCircleDiam()
-        self._base_circle_diam = self.getBaseCircleDiam()
-        self._base_hole_diam = self.calcHoleDiameter()
+        self._rolling_circle_diam = self.calcRollingCircleDiam()
+        self._base_circle_diam = self.calcBaseCircleDiam()
+        self._base_hole_diam = self.calcBaseHoleDiameter()
         
         self._rolling_circle_center = []
         self._epicycloid_pts = []
@@ -48,6 +48,10 @@ class CycloidGeometry:
         return np.sin(np.radians(angle))
     
     @property
+    def get_base_hole_diam(self):
+        return self._base_hole_diam
+    
+    @property
     def get_radius_output_shaft_pins(self):
         return self._radius_output_shaft_pins
 
@@ -55,7 +59,7 @@ class CycloidGeometry:
     @check_input((int, float), 1)
     def set_radius_output_shaft_pins(self, radius):
         self._radius_output_shaft_pins = radius
-        self._base_hole_diam = self.calcHoleDiameter()
+        self._base_hole_diam = self.calcBaseHoleDiameter()
 
     @property
     def get_radius_output_shaft_circle(self):
@@ -112,15 +116,15 @@ class CycloidGeometry:
         self._gear_ratio = self.calcGearRatio()
     
     @property
-    def get_radius_pin_circle(self):
-        return self._radius_pin_circle
+    def get_radius_roller_circle(self):
+        return self._radius_roller_circle
     
-    @get_radius_pin_circle.setter
+    @get_radius_roller_circle.setter
     @check_input((int, float), 5)
-    def set_radius_pin_circle(self, radius):
-        self._radius_pin_circle = radius
-        self._rolling_circle_diam = self.getRollingCircleDiam()
-        self._base_circle_diam = self.getBaseCircleDiam()
+    def set_radius_roller_circle(self, radius):
+        self._radius_roller_circle = radius
+        self._rolling_circle_diam = self.calcRollingCircleDiam()
+        self._base_circle_diam = self.calcBaseCircleDiam()
     
     @property
     def get_radius_roller(self):
@@ -134,12 +138,6 @@ class CycloidGeometry:
     @property
     def get_gear_ratio(self):
         return self._gear_ratio
-        
-    def calcGearRatio(self):
-        return self._num_rotors / (self._num_rollers - self._num_rotors) 
-    
-    def calcHoleDiameter(self):
-        return self._radius_output_shaft_pins + 2 * self._eccentricity # might need to change to 4*e w/ 2 discs
     
     @property
     def get_eccentricity(self):
@@ -147,14 +145,20 @@ class CycloidGeometry:
     
     @get_eccentricity.setter
     def set_eccentricity(self, e):
-        if (e <= 0 or e > self._radius_pin_circle / self._num_rollers):
+        if (e <= 0 or e > self._radius_roller_circle / self._num_rollers):
             raise ValueError("Eccentricity won't create a valid cycloid.")
         self._eccentricity = e
+        
+    def calcGearRatio(self):
+        return self._num_rotors / (self._num_rollers - self._num_rotors) 
     
-    def getRollingCircleDiam(self):
-        return 2 * self._radius_pin_circle / self._num_rollers  
+    def calcBaseHoleDiameter(self):
+        return self._radius_output_shaft_pins + 4 * self._eccentricity # might need to change to 4*e w/ 2 discs
+    
+    def calcRollingCircleDiam(self):
+        return 2 * self._radius_roller_circle / self._num_rollers  
        
-    def getBaseCircleDiam(self):
+    def calcBaseCircleDiam(self):
         return self._gear_ratio * self._rolling_circle_diam
     
     def calcRollingCircleCenter(self, angle):
@@ -263,7 +267,7 @@ class CycloidVisualization:
         plt.show()
     
     def calcAxisLimits(self):
-        return  self.cycloid.get_radius_pin_circle + \
+        return  self.cycloid.get_radius_roller_circle + \
             4 * self.cycloid.get_radius_roller
      
     def makeLegendandTitle(self):
@@ -323,32 +327,33 @@ class CycloidSolidWorks:
         ecc = self.cycloid.get_eccentricity
         rollers = self.cycloid.get_num_rollers
         roller_radius = self.cycloid.get_radius_roller
-        radius_roller_PCD = self.cycloid.get_radius_pin_circle
+        radius_roller_PCD = self.cycloid.get_radius_roller_circle
 
-        psi = f"arctan(sin((1-{rollers}) * t) / (((\"D6@Sketch2\" / 2)/({ecc} * {rollers}))-cos((1-{rollers}) * t)))"
-        x = f"x = (\"D6@Sketch2\" / 2) * cos(t) - (\"D7@Sketch2\" / 2) * cos(t + {psi}) - {ecc} * cos({rollers} * t)"
-        y = f"y = -(\"D6@Sketch2\" / 2) * sin(t) + (\"D7@Sketch2\" / 2) * sin(t + {psi}) + {ecc} * sin({rollers} * t)"
+        # psi = f"arctan(sin((1-{rollers}) * t) / (((\"D6@Sketch2\" / 2)/({ecc} * {rollers}))-cos((1-{rollers}) * t)))"
+        # x = f"x = (\"D6@Sketch2\" / 2) * cos(t) - (\"D7@Sketch2\" / 2) * cos(t + {psi}) - {ecc} * cos({rollers} * t)"
+        # y = f"y = -(\"D6@Sketch2\" / 2) * sin(t) + (\"D7@Sketch2\" / 2) * sin(t + {psi}) + {ecc} * sin({rollers} * t)"
+
+        # self._parametric_eqns.append(x)
+        # self._parametric_eqns.append(y)
 
         psi_2 = f"arctan(sin((1-{rollers}) * t) / (({radius_roller_PCD} / ({ecc} * {rollers})) - cos((1 - {rollers}) * t)))"
         x_2 = f"x = {radius_roller_PCD} * cos(t) - {roller_radius} * cos(t + {psi_2}) - {ecc} * cos({rollers} * t)"
         y_2 = f"y = -{radius_roller_PCD} * sin(t) + {roller_radius} * sin(t + {psi_2}) + {ecc} * sin({rollers} * t)"
-
-        self._parametric_eqns.append(x)
-        self._parametric_eqns.append(y)
+        
         self._parametric_eqns.append(x_2)
         self._parametric_eqns.append(y_2)
 
     def createParameterList(self):
         # Append values set in Cycloid Object for Cycloid Disc Creation
         self._parameter_list.append(f"\"roller_radius\"= {self.cycloid.get_radius_roller}mm")
-        self._parameter_list.append(f"\"roller_pitch_circle_radius\"= {self.cycloid.get_radius_pin_circle}mm")
+        self._parameter_list.append(f"\"roller_pitch_circle_radius\"= {self.cycloid.get_radius_roller_circle}mm")
         self._parameter_list.append(f"\"num_rollers\"= {self.cycloid.get_num_rollers}")
         self._parameter_list.append(f"\"gear_ratio\"= {self.cycloid.get_gear_ratio}")
         self._parameter_list.append(f"\"eccentricity\"= {self.cycloid.get_eccentricity}")
         self._parameter_list.append(f"\"output_pin_radius\"= {self.cycloid.get_radius_output_shaft_pins}mm")
-        self._parameter_list.append(f"\"cycloid_hole_radius\"= {self.cycloid.calcHoleDiameter() / 2}mm")
+        self._parameter_list.append(f"\"cycloid_hole_radius\"= {self.cycloid.get_base_hole_diam() / 2}mm")
         self._parameter_list.append(f"\"num_output_pins\"= {self.cycloid.get_num_output_shafts}")
-        self._parameter_list.append(f"\"base_circle_diameter\"= {self.cycloid.getBaseCircleDiam()}mm")
+        self._parameter_list.append(f"\"base_circle_diameter\"= {self.cycloid.calcBaseCircleDiam()}mm")
         self._parameter_list.append(f"\"output_pin_pitch_radius\"= {self.cycloid.get_radius_output_shaft_circle}mm")
         # Add values for equations in Solidworks
 
@@ -356,7 +361,7 @@ if __name__ == '__main__':
     cycloid = CycloidGeometry()
     cycloid.set_num_rollers = 10
     cycloid.set_radius_roller = 3
-    cycloid.set_radius_pin_circle = 20
+    cycloid.set_radius_roller_circle = 20
     cycloid.set_eccentricity = 1.1
     cycloid.set_radius_output_shaft_circle = 10
     cycloid.set_radius_output_shaft_pins = 4
