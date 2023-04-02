@@ -16,6 +16,7 @@ Here's a final image from one run:
 - Adding feature to create "Parametric Equations" for Solidworks "Equation Driven Curve" and add parameters
     - Can link the text file to Solidworks to create "Global Variables" based on values set in script
 
+![Full Cycloid GIF](imgs/cycloid_assm_wExplodegif.gif)
 
 Some future goals for this project:
 - Improve visualization

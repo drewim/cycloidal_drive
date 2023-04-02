@@ -8,7 +8,6 @@ import os
 
 class CycloidGeometry:
     def __init__(self):
-        # self.num_rotor_teeth = 11
         self._num_rollers = 10
         self._num_rotors = self._num_rollers - 1
         self._radius_pin_circle = 20
@@ -140,7 +139,7 @@ class CycloidGeometry:
         return self._num_rotors / (self._num_rollers - self._num_rotors) 
     
     def calcHoleDiameter(self):
-        return self._radius_output_shaft_pins + 2 * self._eccentricity
+        return self._radius_output_shaft_pins + 2 * self._eccentricity # might need to change to 4*e w/ 2 discs
     
     @property
     def get_eccentricity(self):
@@ -352,13 +351,6 @@ class CycloidSolidWorks:
         self._parameter_list.append(f"\"base_circle_diameter\"= {self.cycloid.getBaseCircleDiam()}mm")
         self._parameter_list.append(f"\"output_pin_pitch_radius\"= {self.cycloid.get_radius_output_shaft_circle}mm")
         # Add values for equations in Solidworks
-        # self._parameter_list.append("\"D2@Sketch2\"=\"output_pin_pitch_radius\" * 2")
-        # self._parameter_list.append("\"D3@Sketch2\"=\"cycloid_hole_radius\" * 2")
-        # self._parameter_list.append("\"D6@Sketch2\"=\"roller_pitch_circle_radius\" * 2")
-        # self._parameter_list.append("\"D7@Sketch2\"=\"roller_radius\" * 2")
-        # self._parameter_list.append("\"D9@Sketch2\"= \"D6@Sketch2\" / 2")
-        # self._parameter_list.append("\"D1@Sketch2\"=\"base_circle_diameter\"")
-
 
 if __name__ == '__main__':
     cycloid = CycloidGeometry()
