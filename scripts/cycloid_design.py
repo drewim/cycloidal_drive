@@ -66,7 +66,7 @@ class CycloidGeometry:
         return self._radius_output_shaft_circle
 
     @get_radius_output_shaft_circle.setter
-    @check_input((int, float), 8)
+    @check_input((int, float), 6)
     def set_radius_output_shaft_circle(self, radius):
         self._radius_output_shaft_circle = radius
 
