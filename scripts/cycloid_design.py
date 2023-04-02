@@ -351,7 +351,7 @@ class CycloidSolidWorks:
         self._parameter_list.append(f"\"gear_ratio\"= {self.cycloid.get_gear_ratio}")
         self._parameter_list.append(f"\"eccentricity\"= {self.cycloid.get_eccentricity}")
         self._parameter_list.append(f"\"output_pin_radius\"= {self.cycloid.get_radius_output_shaft_pins}mm")
-        self._parameter_list.append(f"\"cycloid_hole_radius\"= {self.cycloid.get_base_hole_diam() / 2}mm")
+        self._parameter_list.append(f"\"cycloid_hole_radius\"= {self.cycloid.get_base_hole_diam / 2}mm")
         self._parameter_list.append(f"\"num_output_pins\"= {self.cycloid.get_num_output_shafts}")
         self._parameter_list.append(f"\"base_circle_diameter\"= {self.cycloid.calcBaseCircleDiam()}mm")
         self._parameter_list.append(f"\"output_pin_pitch_radius\"= {self.cycloid.get_radius_output_shaft_circle}mm")
