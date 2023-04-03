@@ -1,10 +1,12 @@
 # Cycloidal Drive System
+[Link to Github Repo](https://github.com/drewim/cycloidal_drive)
 
 Working on a cycloidal drive system. This repo will include latex documents with notes from my research and python code for creating the cycloidal drive.
 
 ![Full Cycloid GIF](imgs/cycloid_assm_wExplodegif.gif)
 
-- See Latex PDF in /cycloidal_drive_tex/ for more details on equations and implementation
+- See Latex PDF in [/cycloidal_drive_tex/](/cycloidal_drive_tex)  for more details on equations and implementation
+
 
 Can create visualizations of the "rolling circle" used to make cycloid shape as seen below:
 
