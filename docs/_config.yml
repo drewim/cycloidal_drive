@@ -20,7 +20,7 @@
 
 title: Cycloidal Drive Creation
 
-description: >- # Project with Python code for creating a cycloidal drive 
+description: >- Project with Python code for creating a cycloidal drive 
 with modifiable parameters and visualization of the cycloidal disc. It can 
 then be used to produce a parameters .txt file to be linked with Solidworks 
 and used for the global variables. It also produces a file with equations
