@@ -21,11 +21,11 @@
 title: Cycloidal Drive Creation
 
 description: >- Project with Python code for creating a cycloidal drive 
-with modifiable parameters and visualization of the cycloidal disc. It can 
-then be used to produce a parameters .txt file to be linked with Solidworks 
-and used for the global variables. It also produces a file with equations
-that can be plugged into the Solidworks "Equation Driven Curve" tool for making
-your own cycloidal disc.
+  with modifiable parameters and visualization of the cycloidal disc. It can 
+  then be used to produce a parameters .txt file to be linked with Solidworks 
+  and used for the global variables. It also produces a file with equations
+  that can be plugged into the Solidworks "Equation Driven Curve" tool for making
+  your own cycloidal disc.
 baseurl: "/cycloidal_drive" # the subpath of your site, e.g. /blog
 url: "https://drewimhof.com" # the base hostname & protocol for your site, e.g. http://example.com
 
