@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 # from shapely.ops import unary_union
 import imageio
 from datetime import datetime
-import os
 
 class CycloidGeometry:
     def __init__(self):
@@ -48,11 +47,11 @@ class CycloidGeometry:
         return np.sin(np.radians(angle))
     
     @property
-    def get_base_hole_diam(self):
+    def get_base_hole_diam(self) -> float:
         return self._base_hole_diam
     
     @property
-    def get_radius_output_shaft_pins(self):
+    def get_radius_output_shaft_pins(self) -> float:
         return self._radius_output_shaft_pins
 
     @get_radius_output_shaft_pins.setter
@@ -62,7 +61,7 @@ class CycloidGeometry:
         self._base_hole_diam = self.calcBaseHoleDiameter()
 
     @property
-    def get_radius_output_shaft_circle(self):
+    def get_radius_output_shaft_circle(self) -> float:
         return self._radius_output_shaft_circle
 
     @get_radius_output_shaft_circle.setter
@@ -71,7 +70,7 @@ class CycloidGeometry:
         self._radius_output_shaft_circle = radius
 
     @property
-    def get_num_output_shafts(self):
+    def get_num_output_shafts(self) -> int:
         return self._num_output_shafts
 
     @get_num_output_shafts.setter
@@ -80,19 +79,19 @@ class CycloidGeometry:
         self._num_output_shafts = num
     
     @property
-    def get_last_rolling_circle_center(self):
+    def get_last_rolling_circle_center(self) -> list[float]:
         return self._rolling_circle_center[-1::][0]
     
     @property
-    def get_last_epicycloid_pts(self):
+    def get_last_epicycloid_pts(self) -> list[float]:
         return self._epicycloid_pts[-1::][0]
     
     @property 
-    def get_epicycloid_pts(self):
+    def get_epicycloid_pts(self) -> list[float]:
         return self._epicycloid_pts
     
     @property
-    def get_num_rollers(self):
+    def get_num_rollers(self) -> int:
         return self._num_rollers
     
     @get_num_rollers.setter
@@ -105,7 +104,7 @@ class CycloidGeometry:
              f"updated to {self._num_rotors}. Gear ratio is now {self._gear_ratio}")
 
     @property
-    def get_num_rotors(self):
+    def get_num_rotors(self) -> int:
         return self._num_rotors
     
     @get_num_rotors.setter
@@ -116,7 +115,7 @@ class CycloidGeometry:
         self._gear_ratio = self.calcGearRatio()
     
     @property
-    def get_radius_roller_circle(self):
+    def get_radius_roller_circle(self) -> float:
         return self._radius_roller_circle
     
     @get_radius_roller_circle.setter
@@ -127,7 +126,7 @@ class CycloidGeometry:
         self._base_circle_diam = self.calcBaseCircleDiam()
     
     @property
-    def get_radius_roller(self):
+    def get_radius_roller(self) -> float:
         return self._radius_roller  
     
     @get_radius_roller.setter
@@ -140,7 +139,7 @@ class CycloidGeometry:
         return self._gear_ratio
     
     @property
-    def get_eccentricity(self):
+    def get_eccentricity(self) -> float:
         return self._eccentricity
     
     @get_eccentricity.setter

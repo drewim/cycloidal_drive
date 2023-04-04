@@ -1,0 +1,20 @@
+"roller_radius"= 3mm
+
+"roller_pitch_circle_radius"= 20mm
+
+"num_rollers"= 10
+
+"gear_ratio"= 9.0
+
+"eccentricity"= 1.1
+
+"output_pin_radius"= 4mm
+
+"cycloid_hole_radius"= 4.2mm
+
+"num_output_pins"= 4
+
+"base_circle_diameter"= 36.0mm
+
+"output_pin_pitch_radius"= 10mm
+
