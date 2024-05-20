@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 # from shapely.ops import unary_union
 import imageio
 from datetime import datetime
+import os
 
 class CycloidGeometry:
     def __init__(self):
@@ -305,8 +306,11 @@ class CycloidSolidWorks:
         self.createTextFile()
 
     def createTextFile(self):
-        self._eqn_file = open(r"text/equations.txt", "w")
-        self._par_eqn_file = open(r"text/parametric_equations.txt", "w")
+        os.makedirs('./text', exist_ok=True)
+        self.eqn_file_path = os.path.join('./text', 'equations.txt')
+        self._eqn_file = open(self.eqn_file_path, "w")
+        self._par_eqn_file_path = os.path.join('./text', 'parametric_equations.txt')
+        self._par_eqn_file = open(self._par_eqn_file_path, "w")
 
     def writeParametricEquations(self):
         self.createParametricEqns()
